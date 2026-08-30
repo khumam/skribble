@@ -119,9 +119,9 @@
 				}
 				game = await r.json();
 				roomError = '';
-				render(game?.strokes ?? []);
 			} catch {}
-			if (alive) setTimeout(poll, 700);
+			// poll fast while playing (live drawing), slow otherwise
+			if (alive) setTimeout(poll, game?.state === 'playing' ? 400 : 1200);
 		};
 		poll();
 		return () => {
@@ -210,11 +210,8 @@
 		];
 	}
 
-	function ctx2d() {
-		const c = canvas.getContext('2d')!;
-		c.fillStyle = '#ffffff';
-		c.fillRect(0, 0, canvas.width, canvas.height);
-		return c;
+	function ctx() {
+		return canvas.getContext('2d')!;
 	}
 
 	function drawPath(c: CanvasRenderingContext2D, s: Stroke) {
@@ -239,13 +236,22 @@
 			canvas.width = w;
 			canvas.height = h;
 		}
-		const c = ctx2d();
+		const c = ctx();
+		c.fillStyle = '#ffffff';
+		c.fillRect(0, 0, canvas.width, canvas.height);
 		for (const s of strokes) drawPath(c, s);
 	}
 
-	// redraw on resize + on new strokes
+	// redraw when the server's stroke list changes — never mid-stroke,
+	// the drawer's local canvas is authoritative while the pointer is down
+	let lastStrokeCount = -1;
 	$effect(() => {
-		if (game?.strokes) render(game.strokes);
+		const strokes = game?.strokes;
+		if (!strokes || !canvas) return;
+		if (drawing) return;
+		if (strokes.length === lastStrokeCount) return;
+		lastStrokeCount = strokes.length;
+		render(strokes);
 	});
 
 	function onDown(e: PointerEvent) {
@@ -260,9 +266,9 @@
 		const p = toXY(e);
 		const prev = buffer[buffer.length - 1];
 		buffer.push(p);
-		// local echo
-		drawPath(ctx2d(), { color, size: brush, path: [prev, p] });
-		if (!flushTimer) flushTimer = setTimeout(flush, 250);
+		// instant local echo (no canvas wipe)
+		drawPath(ctx(), { color, size: brush, path: [prev, p] });
+		if (!flushTimer) flushTimer = setTimeout(flush, 150);
 	}
 
 	function onUp() {
@@ -298,6 +304,7 @@
 			headers: { 'content-type': 'application/json' },
 			body: JSON.stringify({ playerId: me!.playerId, clear: true })
 		});
+		lastStrokeCount = 0;
 		render([]);
 	}
 </script>
