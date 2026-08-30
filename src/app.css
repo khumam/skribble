@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   SKRIBBLE · Claymorphism × Pixel Art × Pastel
+   clay: rounded, chunky, thick ink borders, inner light/shade
+   pixel: hard stepped shadows, Press Start 2P, segmented bars
+   pastel: lavender→pink→butter wash, deep plum ink (no #000/#fff)
+   ============================================================ */
+
+:root {
+	--font-pixel: 'Press Start 2P', monospace;
+	--font-body: 'Fredoka', ui-rounded, system-ui, sans-serif;
+
+	--ink: #4b3f73;
+	--ink-soft: #7a6ba6;
+	--muted: #9a8cc4;
+
+	--bg-1: #e9e2ff;
+	--bg-2: #ffe3f0;
+	--bg-3: #fff6d6;
+
+	--clay: #fdfbff;
+	--clay-shade: #ded1f2;
+
+	--pink: #ffb7d5;
+	--pink-deep: #e58fb3;
+	--violet: #c9b8ff;
+	--violet-deep: #9d82d9;
+	--mint: #b5e8d0;
+	--mint-deep: #7cc4a4;
+	--butter: #ffe9a4;
+	--butter-deep: #dcbc5e;
+	--sky: #b6d8ff;
+	--sky-deep: #7fa8d9;
+	--peach: #ffd2ab;
+	--peach-deep: #da9c68;
+	--coral: #ff9fb3;
+	--coral-deep: #d76e85;
+
+	--line: 3px solid var(--ink);
+	--radius: 20px;
+	--bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+	/* clay+pixel shadow recipe: top light, bottom clay shade, hard pixel step, ambient */
+	--clay-card:
+		inset 0 4px 0 rgba(255, 255, 255, 0.9),
+		inset 0 -10px 12px rgba(157, 130, 217, 0.16),
+		0 6px 0 var(--clay-shade),
+		0 14px 24px rgba(75, 63, 115, 0.14);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: var(--font-body);
+	color: var(--ink);
+	background:
+		radial-gradient(circle at 12% 8%, rgba(255, 255, 255, 0.55), transparent 42%),
+		radial-gradient(circle at 88% 85%, rgba(255, 255, 255, 0.4), transparent 38%),
+		linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 52%, var(--bg-3) 100%);
+	background-attachment: fixed;
+	min-height: 100dvh;
+	-webkit-tap-highlight-color: transparent;
+}
+
+button {
+	font-family: inherit;
+	cursor: pointer;
+}
+
+.app {
+	position: relative;
+	max-width: 480px;
+	margin: 0 auto;
+	padding: 16px;
+	padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+/* ---------- clay card with pixel border ---------- */
+.card {
+	background: var(--clay);
+	border: var(--line);
+	border-radius: var(--radius);
+	padding: 20px;
+	box-shadow: var(--clay-card);
+}
+
+/* ---------- clay press button ---------- */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	border: var(--line);
+	border-radius: var(--radius);
+	padding: 14px 22px;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--ink);
+	background: var(--violet);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+	box-shadow:
+		inset 0 3px 0 rgba(255, 255, 255, 0.55),
+		0 5px 0 var(--violet-deep),
+		0 9px 0 rgba(75, 63, 115, 0.14);
+	transition:
+		transform 0.15s var(--bounce),
+		box-shadow 0.15s var(--bounce);
+	user-select: none;
+	text-decoration: none;
+}
+
+.btn:active:not(:disabled) {
+	transform: translateY(5px);
+	box-shadow:
+		inset 0 3px 0 rgba(255, 255, 255, 0.55),
+		0 1px 0 rgba(75, 63, 115, 0.12);
+}
+
+.btn:disabled {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.btn.green {
+	background: var(--mint);
+	box-shadow:
+		inset 0 3px 0 rgba(255, 255, 255, 0.55),
+		0 5px 0 var(--mint-deep),
+		0 9px 0 rgba(75, 63, 115, 0.14);
+}
+
+.btn.pink {
+	background: var(--pink);
+	box-shadow:
+		inset 0 3px 0 rgba(255, 255, 255, 0.55),
+		0 5px 0 var(--pink-deep),
+		0 9px 0 rgba(75, 63, 115, 0.14);
+}
+
+.btn.small {
+	padding: 8px 14px;
+	font-size: 14px;
+	border-radius: 14px;
+}
+
+/* ---------- inset clay inputs ---------- */
+input[type='text'],
+input[type='search'] {
+	font-family: var(--font-body);
+	font-size: 17px;
+	font-weight: 500;
+	color: var(--ink);
+	border: var(--line);
+	border-radius: 14px;
+	padding: 12px 14px;
+	width: 100%;
+	background: var(--clay);
+	box-shadow: inset 0 4px 8px rgba(75, 63, 115, 0.14);
+	outline: none;
+	transition: box-shadow 0.15s ease;
+}
+
+input::placeholder {
+	color: var(--muted);
+}
+
+input:focus {
+	box-shadow:
+		inset 0 4px 8px rgba(75, 63, 115, 0.14),
+		0 0 0 4px var(--sky);
+}
+
+/* ---------- pixel lettering ---------- */
+.title {
+	text-align: center;
+	font-family: var(--font-pixel);
+	font-size: clamp(22px, 8vw, 34px);
+	line-height: 1.25;
+	color: var(--ink);
+	letter-spacing: 2px;
+	margin: 24px 0 10px;
+	text-shadow:
+		0 3px 0 var(--pink),
+		0 6px 0 var(--violet-deep),
+		0 9px 0 rgba(75, 63, 115, 0.16);
+}
+
+.subtitle {
+	text-align: center;
+	font-family: var(--font-pixel);
+	font-size: 10px;
+	color: var(--ink-soft);
+	margin: 0 0 22px;
+	letter-spacing: 1px;
+}
+
+/* ---------- pixel doodles (box-shadow art) ---------- */
+.px-cloud {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background: #fdfbff;
+	opacity: 0.9;
+	pointer-events: none;
+	box-shadow:
+		10px 0 #fdfbff,
+		20px 0 #fdfbff,
+		30px 0 #fdfbff,
+		40px 10px #fdfbff,
+		-10px 10px #fdfbff,
+		0 10px #fdfbff,
+		10px 10px #fdfbff,
+		20px 10px #fdfbff,
+		30px 10px #fdfbff,
+		10px 20px #fdfbff,
+		20px 20px #fdfbff,
+		30px 20px #fdfbff;
+}
+
+.px-star {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background: var(--butter-deep);
+	pointer-events: none;
+	box-shadow:
+		0 -10px var(--butter),
+		0 10px var(--butter),
+		-10px 0 var(--butter),
+		10px 0 var(--butter);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+	}
+}
